@@ -48,7 +48,6 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
       if (!server || !tenantID || !blueprintID) return;
       setLoading(true);
       const blueprintData = await getData(server, tenantID, blueprintID);
-      console.log("Blueprint Data:", blueprintData.nodes);
       setData(blueprintData);
       setLoading(false);
     };
@@ -60,8 +59,6 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
       setGraph(createGraph(data));
     }
   }, [data]);
-
-  console.log(requestOptions);
 
   return (
     <BlueprintContext.Provider

@@ -3,13 +3,14 @@
 export const getData = async (
   server: string,
   tenantID: string,
-  blueprintID: string
+  blueprintID: string,
+  blueprintVersionID?: string
 ) => {
   try {
-    // /api/v1/{tenant_id}/actions/blueprints/{action_blueprint_id}/{blueprint_version_id}/graph
-
-    // TODO: Look into version ID
-    const url = `${server}/api/v1/${tenantID}/actions/blueprints/${blueprintID}/graph`;
+    // Documentation indicates that a blueprint version ID is required, but the mock server isn't expecting one
+    const url = `${server}/api/v1/${tenantID}/actions/blueprints/${blueprintID}${
+      blueprintVersionID ? `/${blueprintVersionID}` : ""
+    }/graph`;
 
     const res = await fetch(url);
     if (!res.ok) {
