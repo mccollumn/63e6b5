@@ -1,4 +1,4 @@
-export interface BlueprintGraphDescription {
+export interface BlueprintGraph {
   $schema: string;
   id: string;
   tenant_id: string;
