@@ -16,7 +16,7 @@ interface BlueprintContextType {
   graph: DiGraph<VertexDefinition<VertexBody>> | null;
   requestOptions: RequestOptions;
   setRequestOptions: React.Dispatch<React.SetStateAction<RequestOptions>>;
-  loading: boolean;
+  isLoading: boolean;
 }
 
 const defaultRequestOptions: RequestOptions = {
@@ -30,7 +30,7 @@ const BlueprintContext = React.createContext<BlueprintContextType>({
   graph: null,
   requestOptions: defaultRequestOptions,
   setRequestOptions: () => {},
-  loading: false,
+  isLoading: false,
 });
 
 const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
@@ -63,7 +63,13 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <BlueprintContext.Provider
-      value={{ data, graph, requestOptions, setRequestOptions, loading }}
+      value={{
+        data,
+        graph,
+        requestOptions,
+        setRequestOptions,
+        isLoading: loading,
+      }}
     >
       {children}
     </BlueprintContext.Provider>
