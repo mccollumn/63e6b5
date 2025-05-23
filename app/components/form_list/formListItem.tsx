@@ -1,29 +1,15 @@
-import { Paper, Typography } from "@mui/material";
+import ListItem from "@/components/listItem";
 import { BlueprintNodeData } from "@/types/blueprintGraph";
 
-interface ListFileItemProps {
+interface FormListItemProps {
   form: BlueprintNodeData;
   onClick: (form: BlueprintNodeData) => void;
 }
 
-const ListFileItem = ({ form, onClick }: ListFileItemProps) => {
+const FormListItem = ({ form, onClick }: FormListItemProps) => {
   const { name } = form;
 
-  return (
-    <Paper
-      onClick={() => onClick(form)}
-      sx={{
-        padding: 2,
-        marginBottom: 2,
-        cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "#f0f0f0",
-        },
-      }}
-    >
-      <Typography variant="body1">{name}</Typography>
-    </Paper>
-  );
+  return <ListItem onClick={() => onClick(form)}>{name}</ListItem>;
 };
 
-export default ListFileItem;
+export default FormListItem;
