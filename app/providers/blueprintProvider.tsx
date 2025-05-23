@@ -28,7 +28,7 @@ const defaultRequestOptions: RequestOptions = {
 const BlueprintContext = React.createContext<BlueprintContextType>({
   data: null,
   graph: null,
-  requestOptions: deaultRequestOptions,
+  requestOptions: defaultRequestOptions,
   setRequestOptions: () => {},
   loading: false,
 });
@@ -38,8 +38,9 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
   const [graph, setGraph] = React.useState<DiGraph<
     VertexDefinition<VertexBody>
   > | null>(null);
-  const [requestOptions, setRequestOptions] =
-    React.useState<RequestOptions>(deaultRequestOptions);
+  const [requestOptions, setRequestOptions] = React.useState<RequestOptions>(
+    defaultRequestOptions
+  );
   const [loading, setLoading] = React.useState(false);
   const { server, tenantID, blueprintID } = requestOptions;
 
