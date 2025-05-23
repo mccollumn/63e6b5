@@ -1,13 +1,17 @@
 import { Paper, Typography } from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 interface ListItemProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
+  onCancel?: () => void;
 }
 
-const ListItem = ({ children, ...props }: ListItemProps) => {
+const ListItem = ({ children, onCancel, ...props }: ListItemProps) => {
   return (
     <Paper
       sx={{
+        display: "flex",
+        justifyContent: "space-between",
         padding: 2,
         marginBottom: 2,
         cursor: "pointer",
@@ -18,6 +22,7 @@ const ListItem = ({ children, ...props }: ListItemProps) => {
       {...props}
     >
       <Typography variant="body1">{children}</Typography>
+      {onCancel ? <CancelIcon onClick={onCancel} /> : null}
     </Paper>
   );
 };
