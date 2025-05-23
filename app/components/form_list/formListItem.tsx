@@ -1,15 +1,15 @@
 import ListItem from "@/components/listItem";
-import { BlueprintNodeData } from "@/types/blueprintGraph";
+import { BlueprintNode } from "@/types/blueprintGraph";
 
 interface FormListItemProps {
-  form: BlueprintNodeData;
-  onClick: (form: BlueprintNodeData) => void;
+  formNode: BlueprintNode;
+  onClick: (formNode: BlueprintNode) => void;
 }
 
-const FormListItem = ({ form, onClick }: FormListItemProps) => {
-  const { name } = form;
+const FormListItem = ({ formNode, onClick }: FormListItemProps) => {
+  const { name } = formNode.data;
 
-  return <ListItem onClick={() => onClick(form)}>{name}</ListItem>;
+  return <ListItem onClick={() => onClick(formNode)}>{name}</ListItem>;
 };
 
 export default FormListItem;

@@ -85,7 +85,7 @@ const createGraph = (data: BlueprintGraph) => {
 
   nodes.forEach((node) => {
     const { id } = node;
-    graph.addVertex({ id, adjacentTo: [], body: { ...node.data } });
+    graph.addVertex({ id, adjacentTo: [], body: { ...node } });
   });
 
   edges.forEach((edge) => {
