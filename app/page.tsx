@@ -20,46 +20,45 @@ export default function Home() {
       setExpanded(isExpanded ? panel : false);
     };
 
+  const accordionPanelConfigs = [
+    {
+      id: "get-forms",
+      title: "Enter Blueprint Details",
+      content: (
+        <GetForms
+          handleAccordionChange={() => {
+            setExpanded("list-forms");
+          }}
+        />
+      ),
+    },
+    {
+      id: "list-forms",
+      title: "Forms",
+      content: <FormList />,
+    },
+  ];
+
   return (
     <Box sx={{ width: "100%", padding: 4, justifySelf: "center" }}>
-      <Accordion
-        expanded={expanded === "get-forms"}
-        onChange={handleChange("get-forms")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="get-forms-content"
-          id="get-forms-header"
+      {accordionPanelConfigs.map((panel) => (
+        <Accordion
+          key={panel.id}
+          expanded={expanded === panel.id}
+          onChange={handleChange(panel.id)}
         >
-          <Typography align="center" sx={{ width: "100%" }}>
-            Enter Blueprint Details
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <GetForms
-            handleAccordionChange={() => {
-              setExpanded("list-forms");
-            }}
-          />
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "list-forms"}
-        onChange={handleChange("list-forms")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="list-forms-content"
-          id="list-forms-header"
-        >
-          <Typography align="center" sx={{ width: "100%" }}>
-            Forms
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <FormList />
-        </AccordionDetails>
-      </Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`${panel.id}-content`}
+            id={`${panel.id}-header`}
+          >
+            <Typography align="center" sx={{ width: "100%" }}>
+              {panel.title}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>{panel.content}</AccordionDetails>
+        </Accordion>
+      ))}
     </Box>
   );
 }
