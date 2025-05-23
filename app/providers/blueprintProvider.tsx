@@ -19,7 +19,7 @@ interface BlueprintContextType {
   loading: boolean;
 }
 
-const deaultRequestOptions: RequestOptions = {
+const defaultRequestOptions: RequestOptions = {
   server: null,
   tenantID: null,
   blueprintID: null,
