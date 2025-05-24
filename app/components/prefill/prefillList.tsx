@@ -2,86 +2,55 @@ import React from "react";
 import List from "@/components/list";
 import NotAvailable from "../notAvailable";
 import Title from "../title";
-import { PrefillMappingContext } from "@/providers/prefillMappingProvider";
-import { BlueprintContext } from "@/providers/blueprintProvider";
-import convertFormToDataSource from "@/util/convertFormToDataSource";
-import { BlueprintForm, BlueprintGraph } from "@/types/blueprintGraph";
-import { PrefillMapping } from "@/types/dataSource";
 import PrefillListItem from "./prefillListItem";
+import DataSourceModal, {
+  SelectedOption,
+} from "../dataSourceModal/dataSourceModal";
+import usePrefillMapping from "@/hooks/usePrefillMapping";
+import useDataSources from "@/hooks/useDataSources";
 
 interface PrefillListProps {
   formNodeID: string | null;
-  handleAccordionChange: () => void;
 }
 
-const PrefillList = ({
-  formNodeID,
-  handleAccordionChange,
-}: PrefillListProps) => {
-  const { setGlobalPrefillMapping } = React.useContext(PrefillMappingContext);
-  const { data } = React.useContext(BlueprintContext);
-  const [prefillMapping, setPrefillMapping] = React.useState<PrefillMapping[]>(
-    []
-  );
-  const formNodeName =
-    data?.nodes.find((node) => node.id === formNodeID)?.data.name ?? "";
-
-  React.useEffect(() => {
-    if (!formNodeID || !data) return;
-    const form = getFormFromNodeID(formNodeID, data);
-
-    if (!form) return;
-    const formMapping = createFormMapping(form);
-    setPrefillMapping(formMapping);
-    setGlobalPrefillMapping((prev) => [
-      ...prev.filter((mapping) => mapping.id !== formNodeID),
-      { id: formNodeID, name: formNodeName, properties: formMapping },
-    ]);
-
-    handleAccordionChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, formNodeID]);
+const PrefillList = ({ formNodeID }: PrefillListProps) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedElement, setSelectedElement] =
+    React.useState<SelectedOption | null>(null);
+  const { formNodeName, prefillMapping, updatePrefillMapping } =
+    usePrefillMapping(formNodeID);
+  const { dataSources } = useDataSources(formNodeID);
 
   const handleClick = (formNodeID: string, name: string) => {
-    console.log("Clicked", formNodeID, name);
+    setSelectedElement({ source: formNodeID, property: name });
+    setIsModalOpen(true);
   };
 
   const handleClear = (formNodeID: string, name: string) => {
-    console.log("clear", formNodeID, name);
-    setPrefillMapping((prev) =>
-      prev.map((property) => {
-        if (property.name === name) {
-          return { ...property, value: null };
-        }
-        return property;
-      })
+    updatePrefillMapping(formNodeID, name, null);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleModalSelect = (value: string) => {
+    updatePrefillMapping(
+      selectedElement?.source || "",
+      selectedElement?.property || "",
+      value
     );
-    setGlobalPrefillMapping((prev) =>
-      prev.map((mapping) => {
-        if (mapping.id === formNodeID) {
-          return {
-            ...mapping,
-            properties: mapping.properties.map((property) => {
-              if (property.name === name) {
-                return { ...property, value: null };
-              }
-              return property;
-            }),
-          };
-        }
-        return mapping;
-      })
-    );
+    setIsModalOpen(false);
   };
 
   return (
     <>
       <Title>Prefill Mapping for {formNodeName}</Title>
       <List>
-        {prefillMapping.length === 0 && (
+        {(prefillMapping?.length ?? 0) === 0 && (
           <NotAvailable>No prefill mapping available</NotAvailable>
         )}
-        {prefillMapping.map((property) => {
+        {(prefillMapping ?? []).map((property) => {
           return (
             <PrefillListItem
               key={property.name}
@@ -96,24 +65,16 @@ const PrefillList = ({
           );
         })}
       </List>
+      <DataSourceModal
+        open={isModalOpen}
+        dataSources={dataSources}
+        onCancel={handleModalCancel}
+        onSelect={(element) =>
+          handleModalSelect(`${element?.source}.${element?.property}` || "")
+        }
+      />
     </>
   );
-};
-
-const getFormFromNodeID = (formNodeID: string, data: BlueprintGraph) => {
-  const formNode = data.nodes.find((node) => node.id === formNodeID);
-  if (!formNode) return null;
-  const formID = formNode.data.component_id;
-  const form = data.forms.find((form) => form.id === formID) as BlueprintForm;
-
-  return form;
-};
-
-const createFormMapping = (form: BlueprintForm) => {
-  const dataSource = convertFormToDataSource(form);
-  return dataSource.properties.map((property) => {
-    return { value: null, ...property };
-  });
 };
 
 export default PrefillList;

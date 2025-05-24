@@ -9,9 +9,15 @@ interface GetFormsProps {
 }
 
 const GetForms = ({ handleAccordionChange }: GetFormsProps) => {
-  const [server, setServer] = React.useState("");
-  const [tenantId, setTenantId] = React.useState("");
-  const [blueprintId, setBlueprintId] = React.useState("");
+  const [server, setServer] = React.useState(
+    process.env.NEXT_PUBLIC_API_SERVER || ""
+  );
+  const [tenantId, setTenantId] = React.useState(
+    process.env.NEXT_PUBLIC_API_TENANT_ID || ""
+  );
+  const [blueprintId, setBlueprintId] = React.useState(
+    process.env.NEXT_PUBLIC_API_BLUEPRINT_ID || ""
+  );
   const [blueprintVersionId, setBlueprintVersionId] = React.useState("");
   const { setRequestOptions } = React.useContext(BlueprintContext);
 

@@ -1,9 +1,9 @@
 import React from "react";
-import convertFormToDataSource from "@/util/convertFormToDataSource";
-import { BlueprintContext } from "@/providers/blueprintProvider";
-import { BlueprintForm, BlueprintGraph } from "@/types/blueprintGraph";
-import { PrefillMapping } from "@/types/dataSource";
 import { PrefillMappingContext } from "@/providers/prefillMappingProvider";
+import { BlueprintContext } from "@/providers/blueprintProvider";
+import getFormFromNodeID from "@/util/getFormFromNodeID";
+import { PrefillMapping } from "@/types/dataSource";
+import createFormMapping from "@/util/createFormMapping";
 
 const usePrefillMapping = (formNodeID: string | null) => {
   const { data } = React.useContext(BlueprintContext);
@@ -43,12 +43,16 @@ const usePrefillMapping = (formNodeID: string | null) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, formNodeID]);
 
-  const updatePrefillMapping = (formNodeID: string, name: string) => {
+  const updatePrefillMapping = (
+    formNodeID: string,
+    name: string,
+    value: string | null
+  ) => {
     if (setPrefillMapping) {
       setPrefillMapping((prev) =>
         prev.map((property) => {
           if (property.name === name) {
-            return { ...property, value: null };
+            return { ...property, value: value };
           }
           return property;
         })
@@ -61,7 +65,7 @@ const usePrefillMapping = (formNodeID: string | null) => {
             ...mapping,
             properties: mapping.properties.map((property) => {
               if (property.name === name) {
-                return { ...property, value: null };
+                return { ...property, value: value };
               }
               return property;
             }),
@@ -72,31 +76,12 @@ const usePrefillMapping = (formNodeID: string | null) => {
     );
   };
 
-  console.log("Prefill Mapping:", prefillMapping);
-  console.log("Global Prefill Mapping:", globalPrefillMapping);
-
   return {
     form,
     formNodeName,
     prefillMapping,
     updatePrefillMapping,
   };
-};
-
-const getFormFromNodeID = (formNodeID: string, data: BlueprintGraph) => {
-  const formNode = data.nodes.find((node) => node.id === formNodeID);
-  if (!formNode) return null;
-  const formID = formNode.data.component_id;
-  const form = data.forms.find((form) => form.id === formID) as BlueprintForm;
-
-  return form;
-};
-
-const createFormMapping = (form: BlueprintForm): PrefillMapping[] => {
-  const dataSource = convertFormToDataSource(form);
-  return dataSource.properties.map((property) => {
-    return { value: null, ...property };
-  });
 };
 
 export default usePrefillMapping;

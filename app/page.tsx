@@ -40,20 +40,18 @@ export default function Home() {
       id: "list-forms",
       title: "Forms",
       content: (
-        <FormList handleFormClick={(formID) => setSelectedFormID(formID)} />
+        <FormList
+          handleFormClick={(formID) => {
+            setSelectedFormID(formID);
+            setExpanded("prefill");
+          }}
+        />
       ),
     },
     {
       id: "prefill",
       title: "Prefill",
-      content: (
-        <PrefillList
-          formNodeID={selectedFormID}
-          handleAccordionChange={() => {
-            setExpanded("prefill");
-          }}
-        />
-      ),
+      content: <PrefillList formNodeID={selectedFormID} />,
     },
   ];
 
