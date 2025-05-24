@@ -34,7 +34,7 @@ const PrefillList = ({
     const formMapping = createFormMapping(form);
     setPrefillMapping(formMapping);
     setGlobalPrefillMapping((prev) => [
-      ...prev,
+      ...prev.filter((mapping) => mapping.id !== formNodeID),
       { id: formNodeID, name: formNodeName, properties: formMapping },
     ]);
 
