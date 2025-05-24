@@ -3,8 +3,11 @@ import List from "@/components/list";
 import NotAvailable from "../notAvailable";
 import Title from "../title";
 import PrefillListItem from "./prefillListItem";
-import DataSourceModal from "../dataSourceModal/dataSourceModal";
-import usePrefillMapping from "@/hooks/useFormMapping";
+import DataSourceModal, {
+  SelectedOption,
+} from "../dataSourceModal/dataSourceModal";
+import usePrefillMapping from "@/hooks/usePrefillMapping";
+import useDataSources from "@/hooks/useDataSources";
 
 interface PrefillListProps {
   formNodeID: string | null;
@@ -14,24 +17,22 @@ const PrefillList = ({ formNodeID }: PrefillListProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { formNodeName, prefillMapping, updatePrefillMapping } =
     usePrefillMapping(formNodeID);
+  const { dataSources } = useDataSources(formNodeID);
 
-  const handleClick = (formNodeID: string, name: string) => {
-    console.log("Clicked", formNodeID, name);
+  const handleClick = () => {
     setIsModalOpen(true);
   };
 
   const handleClear = (formNodeID: string, name: string) => {
-    console.log("clear", formNodeID, name);
     updatePrefillMapping(formNodeID, name);
   };
 
   const handleModalCancel = () => {
-    console.log("Modal cancelled");
     setIsModalOpen(false);
   };
 
-  const handleModalSelect = (element: string) => {
-    console.log("Modal select", element);
+  const handleModalSelect = (element: SelectedOption | null) => {
+    if (!element) return;
     setIsModalOpen(false);
   };
 
@@ -59,7 +60,7 @@ const PrefillList = ({ formNodeID }: PrefillListProps) => {
       </List>
       <DataSourceModal
         open={isModalOpen}
-        options={(prefillMapping ?? []).map((property) => property.name)}
+        dataSources={dataSources}
         onCancel={handleModalCancel}
         onSelect={handleModalSelect}
       />

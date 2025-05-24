@@ -5,51 +5,67 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
-import { Autocomplete, TextField } from "@mui/material";
+import DataSourceSearch from "./dataSourceSearch";
+import DataSourceList from "./dataSourceList";
+import { DataSource } from "@/types/dataSource";
 
 interface DataSourceModalProps {
   open: boolean;
-  options: string[];
+  dataSources: DataSource[];
   onCancel: () => void;
-  onSelect: (element: string) => void;
+  onSelect: (element: SelectedOption | null) => void;
 }
+
+export type SelectedOption = {
+  source: string;
+  property: string;
+};
 
 const DataSourceModal = ({
   open,
-  options,
+  dataSources,
   onCancel,
   onSelect,
 }: DataSourceModalProps) => {
-  const handleClose = () => {
-    //   setOpen(false);
-  };
-
-  const element = "exampleElement"; // Replace with actual element logic
+  const [selection, setSelection] = React.useState<SelectedOption | null>(null);
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open}>
         <DialogTitle>Select data element to map</DialogTitle>
         <DialogContent>
           <DialogContentText>Available data</DialogContentText>
-          <Autocomplete
-            options={options}
-            renderInput={(params) => <TextField {...params} label="Search" />}
-            // onChange={(event, value) => {
-            //   if (value) {
-            //     onSelect(value);
-            //   }
-            // }}
-            sx={{ width: 300 }}
-            autoComplete
-            autoFocus
+          <DataSourceSearch
+            dataSources={dataSources}
+            onSearchSelect={(element) => {
+              setSelection(element);
+            }}
+          />
+          <DataSourceList
+            dataSources={dataSources}
+            onListSelect={(element) => {
+              setSelection(element);
+            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancel} color="primary">
+          <Button
+            onClick={() => {
+              onCancel();
+              setSelection(null);
+            }}
+            color="primary"
+          >
             Cancel
           </Button>
-          <Button onClick={() => onSelect(element)} color="primary">
+          <Button
+            onClick={() => {
+              onSelect(selection);
+              setSelection(null);
+            }}
+            color="primary"
+            disabled={!selection}
+          >
             Select
           </Button>
         </DialogActions>

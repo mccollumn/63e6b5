@@ -1,9 +1,9 @@
 import React from "react";
-import convertFormToDataSource from "@/util/convertFormToDataSource";
-import { BlueprintContext } from "@/providers/blueprintProvider";
-import { BlueprintForm, BlueprintGraph } from "@/types/blueprintGraph";
-import { PrefillMapping } from "@/types/dataSource";
 import { PrefillMappingContext } from "@/providers/prefillMappingProvider";
+import { BlueprintContext } from "@/providers/blueprintProvider";
+import getFormFromNodeID from "@/util/getFormFromNodeID";
+import { PrefillMapping } from "@/types/dataSource";
+import createFormMapping from "@/util/createFormMapping";
 
 const usePrefillMapping = (formNodeID: string | null) => {
   const { data } = React.useContext(BlueprintContext);
@@ -81,22 +81,6 @@ const usePrefillMapping = (formNodeID: string | null) => {
     prefillMapping,
     updatePrefillMapping,
   };
-};
-
-const getFormFromNodeID = (formNodeID: string, data: BlueprintGraph) => {
-  const formNode = data.nodes.find((node) => node.id === formNodeID);
-  if (!formNode) return null;
-  const formID = formNode.data.component_id;
-  const form = data.forms.find((form) => form.id === formID) as BlueprintForm;
-
-  return form;
-};
-
-const createFormMapping = (form: BlueprintForm): PrefillMapping[] => {
-  const dataSource = convertFormToDataSource(form);
-  return dataSource.properties.map((property) => {
-    return { value: null, ...property };
-  });
 };
 
 export default usePrefillMapping;
