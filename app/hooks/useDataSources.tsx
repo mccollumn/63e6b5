@@ -13,7 +13,6 @@ const useDataSources = (formNodeID: string | null) => {
   React.useEffect(() => {
     const getCustomDataSources = async () => {
       const customDataSources: DataSource[] = await getDataSources();
-      console.log("Custom data sources:", customDataSources);
       return customDataSources;
     };
     getCustomDataSources().then((customDataSources) => {

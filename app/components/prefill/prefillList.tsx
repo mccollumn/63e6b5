@@ -73,7 +73,6 @@ const PrefillList = ({ formNodeID }: PrefillListProps) => {
           handleModalSelect(`${element?.source}.${element?.property}` || "")
         }
       />
-      ;
     </>
   );
 };

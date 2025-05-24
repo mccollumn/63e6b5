@@ -76,9 +76,6 @@ const usePrefillMapping = (formNodeID: string | null) => {
     );
   };
 
-  console.log("Prefill Mapping:", prefillMapping);
-  console.log("Global Prefill Mapping:", globalPrefillMapping);
-
   return {
     form,
     formNodeName,
