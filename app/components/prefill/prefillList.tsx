@@ -15,24 +15,31 @@ interface PrefillListProps {
 
 const PrefillList = ({ formNodeID }: PrefillListProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedElement, setSelectedElement] =
+    React.useState<SelectedOption | null>(null);
   const { formNodeName, prefillMapping, updatePrefillMapping } =
     usePrefillMapping(formNodeID);
   const { dataSources } = useDataSources(formNodeID);
 
-  const handleClick = () => {
+  const handleClick = (formNodeID: string, name: string) => {
+    setSelectedElement({ source: formNodeID, property: name });
     setIsModalOpen(true);
   };
 
   const handleClear = (formNodeID: string, name: string) => {
-    updatePrefillMapping(formNodeID, name);
+    updatePrefillMapping(formNodeID, name, null);
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleModalSelect = (element: SelectedOption | null) => {
-    if (!element) return;
+  const handleModalSelect = (value: string) => {
+    updatePrefillMapping(
+      selectedElement?.source || "",
+      selectedElement?.property || "",
+      value
+    );
     setIsModalOpen(false);
   };
 
@@ -62,7 +69,9 @@ const PrefillList = ({ formNodeID }: PrefillListProps) => {
         open={isModalOpen}
         dataSources={dataSources}
         onCancel={handleModalCancel}
-        onSelect={handleModalSelect}
+        onSelect={(element) =>
+          handleModalSelect(`${element?.source}.${element?.property}` || "")
+        }
       />
       ;
     </>

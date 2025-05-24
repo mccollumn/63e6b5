@@ -43,12 +43,16 @@ const usePrefillMapping = (formNodeID: string | null) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, formNodeID]);
 
-  const updatePrefillMapping = (formNodeID: string, name: string) => {
+  const updatePrefillMapping = (
+    formNodeID: string,
+    name: string,
+    value: string | null
+  ) => {
     if (setPrefillMapping) {
       setPrefillMapping((prev) =>
         prev.map((property) => {
           if (property.name === name) {
-            return { ...property, value: null };
+            return { ...property, value: value };
           }
           return property;
         })
@@ -61,7 +65,7 @@ const usePrefillMapping = (formNodeID: string | null) => {
             ...mapping,
             properties: mapping.properties.map((property) => {
               if (property.name === name) {
-                return { ...property, value: null };
+                return { ...property, value: value };
               }
               return property;
             }),

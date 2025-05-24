@@ -22,7 +22,14 @@ const ListItem = ({ children, onCancel, ...props }: ListItemProps) => {
       {...props}
     >
       <Typography variant="body1">{children}</Typography>
-      {onCancel ? <CancelIcon onClick={onCancel} /> : null}
+      {onCancel ? (
+        <CancelIcon
+          onClick={(e) => {
+            e.stopPropagation();
+            onCancel();
+          }}
+        />
+      ) : null}
     </Paper>
   );
 };
