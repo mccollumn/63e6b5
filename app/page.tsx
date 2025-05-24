@@ -11,9 +11,13 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import GetForms from "./components/get_forms/getForms";
 import FormList from "./components/form_list/formList";
+import PrefillList from "./components/prefill/prefillList";
 
 export default function Home() {
   const [expanded, setExpanded] = React.useState<string | false>("get-forms");
+  const [selectedFormID, setSelectedFormID] = React.useState<string | null>(
+    null
+  );
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -35,7 +39,21 @@ export default function Home() {
     {
       id: "list-forms",
       title: "Forms",
-      content: <FormList />,
+      content: (
+        <FormList handleFormClick={(formID) => setSelectedFormID(formID)} />
+      ),
+    },
+    {
+      id: "prefill",
+      title: "Prefill",
+      content: (
+        <PrefillList
+          formNodeID={selectedFormID}
+          handleAccordionChange={() => {
+            setExpanded("prefill");
+          }}
+        />
+      ),
     },
   ];
 
