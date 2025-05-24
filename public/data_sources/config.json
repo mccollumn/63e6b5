@@ -1,0 +1,16 @@
+[
+  {
+    "id": "123abc",
+    "name": "My Custom Data Source",
+    "properties": [
+      { "name": "Custom Property 1" },
+      { "name": "Custom Property 2" },
+      { "name": "Custom Property 3" }
+    ]
+  },
+  {
+    "id": "456def",
+    "name": "Another Data Source",
+    "properties": [{ "name": "Property A" }, { "name": "Property B" }]
+  }
+]
