@@ -8,6 +8,9 @@ import { DataSource } from "@/types/dataSource";
 
 const useDataSources = (formNodeID: string | null) => {
   const [dataSources, setDataSources] = React.useState<DataSource[]>([]);
+  const [customDataSources, setCustomDataSources] = React.useState<
+    DataSource[]
+  >([]);
   const { data, graph } = React.useContext(BlueprintContext);
 
   React.useEffect(() => {
@@ -17,9 +20,9 @@ const useDataSources = (formNodeID: string | null) => {
     };
     getCustomDataSources().then((customDataSources) => {
       if (Array.isArray(customDataSources)) {
-        setDataSources((prev) => [...prev, ...customDataSources]);
+        setCustomDataSources((prev) => [...prev, ...customDataSources]);
       } else if (customDataSources) {
-        setDataSources((prev) => [...prev, customDataSources]);
+        setCustomDataSources((prev) => [...prev, customDataSources]);
       }
     });
   }, []);
@@ -32,6 +35,8 @@ const useDataSources = (formNodeID: string | null) => {
     const formNodes = formDependencies.map((node) =>
       data.nodes.find((n) => n.id === node)
     );
+    setDataSources(customDataSources);
+
     forms.forEach((form, index) => {
       const formNodeName = formNodes[index]?.data.name ?? "";
       const formNodeID = formNodes[index]?.id ?? "";
@@ -41,7 +46,7 @@ const useDataSources = (formNodeID: string | null) => {
         { name: formNodeName, id: formNodeID, properties: [...mapping] },
       ]);
     });
-  }, [data, formNodeID, graph]);
+  }, [customDataSources, data, formNodeID, graph]);
 
   return {
     dataSources,
