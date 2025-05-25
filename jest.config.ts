@@ -97,8 +97,14 @@ const config: Config = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/$1",
+    "^@/(.*)$": "<rootDir>/app/$1",
+    // Mock digraph-js to a manual mock file or identity-obj-proxy for tests
+    "digraph-js": "<rootDir>/__mocks__/digraph-js.js",
   },
+  // moduleNameMapper: {
+  //   "^@/app(.*)$": "<rootDir>/$1",
+  //   "digraph-js": "<rootDir>/node_modules/digraph-js",
+  // },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -154,6 +160,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
+  testEnvironment: "jsdom",
   // testEnvironment: "jest-environment-node",
 
   // Options that will be passed to the testEnvironment
@@ -184,11 +191,17 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   // transform: undefined,
+  transform: {
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+  },
+  // transform: {
+  //   "^.+\\.tsx?$": "babel-jest",
+  // },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
+  // transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
   // transformIgnorePatterns: [
-  //   "/node_modules/",
-  //   "\\.pnp\\.[^\\/]+$"
+  //   "/node_modules/(?!(digraph-js)/)",
   // ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
