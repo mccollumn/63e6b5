@@ -74,6 +74,15 @@ interface UpdateFormMappingParams {
   setPrefillMapping: React.Dispatch<React.SetStateAction<PrefillMapping[]>>;
 }
 
+/**
+ * Updates the value of a specific property in the prefill mapping array by name.
+ *
+ * @param name - The name of the property to update.
+ * @param value - The new value to assign to the property.
+ * @param setPrefillMapping - The state setter function for updating the prefill mapping array.
+ *
+ * @returns void
+ */
 const updateFormMapping = ({
   name,
   value,
@@ -100,6 +109,15 @@ interface UpdateGlobalMappingParams {
   >;
 }
 
+/**
+ * Updates the global prefill mapping by modifying the value of a specific property
+ * within a mapping identified by `formNodeID`.
+ *
+ * @param formNodeID - The unique identifier of the mapping to update.
+ * @param name - The name of the property within the mapping to update.
+ * @param value - The new value to assign to the specified property.
+ * @param setGlobalPrefillMapping - The state setter function for updating the global prefill mapping.
+ */
 const updateGlobalMapping = ({
   formNodeID,
   name,

@@ -11,6 +11,16 @@ type RequestOptions = {
   blueprintID: string | null;
 };
 
+/**
+ * Context type for providing blueprint-related data and state throughout the application.
+ *
+ * @property {BlueprintGraph | null} data - The current blueprint graph data, or null if not loaded.
+ * @property {DiGraph<VertexDefinition<VertexBody>> | null} graph - The directed graph representation of the blueprint, or null if not available.
+ * @property {RequestOptions} requestOptions - The current options used for requests related to the blueprint.
+ * @property {React.Dispatch<React.SetStateAction<RequestOptions>>} setRequestOptions - Function to update the request options.
+ * @property {boolean} isLoading - Indicates whether blueprint data is currently being loaded.
+ * @property {boolean} [isError] - Optional flag indicating if there was an error loading the blueprint data.
+ */
 interface BlueprintContextType {
   data: BlueprintGraph | null;
   graph: DiGraph<VertexDefinition<VertexBody>> | null;
@@ -97,6 +107,12 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+/**
+ * Creates a directed graph (DiGraph) from the provided blueprint data.
+ *
+ * @param data - The blueprint graph data containing nodes and edges.
+ * @returns A DiGraph instance representing the blueprint, or `null` if nodes or edges are missing.
+ */
 const createGraph = (data: BlueprintGraph) => {
   const graph = new DiGraph();
   const nodes = data.nodes;
