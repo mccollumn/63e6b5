@@ -35,7 +35,7 @@ const DataSourceSearch = ({
       onChange={(event, value) => {
         onSearchSelect(value ? value.id : null);
       }}
-      sx={{ width: 300 }}
+      sx={{ width: 300, mt: 1 }}
       autoComplete
       autoFocus
     />
