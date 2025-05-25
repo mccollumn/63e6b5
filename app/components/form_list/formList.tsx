@@ -14,7 +14,7 @@ const FormList = ({ handleFormClick }: FormListProps) => {
   const [formList, setFormList] = React.useState<
     VertexDefinition<VertexBody>[]
   >([]);
-  const { graph } = React.useContext(BlueprintContext);
+  const { graph, isError } = React.useContext(BlueprintContext);
 
   React.useEffect(() => {
     if (graph) {
@@ -28,6 +28,12 @@ const FormList = ({ handleFormClick }: FormListProps) => {
       setFormList(formNodes);
     }
   }, [graph]);
+
+  React.useEffect(() => {
+    if (isError) {
+      setFormList([]);
+    }
+  }, [isError]);
 
   return (
     <List>

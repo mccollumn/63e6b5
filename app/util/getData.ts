@@ -21,7 +21,7 @@ export const getData = async (
     return result;
   } catch (error) {
     if (error instanceof Error) {
-      return { message: error.message };
+      throw new Error(`Error fetching data: ${error.message}`);
     }
     return { message: String(error) };
   }

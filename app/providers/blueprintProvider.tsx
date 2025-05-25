@@ -17,6 +17,7 @@ interface BlueprintContextType {
   requestOptions: RequestOptions;
   setRequestOptions: React.Dispatch<React.SetStateAction<RequestOptions>>;
   isLoading: boolean;
+  isError?: boolean;
 }
 
 const defaultRequestOptions: RequestOptions = {
@@ -31,6 +32,7 @@ const BlueprintContext = React.createContext<BlueprintContextType>({
   requestOptions: defaultRequestOptions,
   setRequestOptions: () => {},
   isLoading: false,
+  isError: false,
 });
 
 const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
@@ -41,16 +43,34 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
   const [requestOptions, setRequestOptions] = React.useState<RequestOptions>(
     defaultRequestOptions
   );
-  const [loading, setLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
   const { server, tenantID, blueprintID } = requestOptions;
 
   React.useEffect(() => {
     const retrieveData = async () => {
       if (!server || !tenantID || !blueprintID) return;
-      setLoading(true);
-      const blueprintData = await getData(server, tenantID, blueprintID);
-      setData(blueprintData);
-      setLoading(false);
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const blueprintData = await getData(server, tenantID, blueprintID);
+        if (!blueprintData || blueprintData.error) {
+          console.error(
+            "Error retrieving blueprint data:",
+            blueprintData?.error
+          );
+          setData(null);
+          setIsError(true);
+        } else {
+          setData(blueprintData);
+        }
+      } catch {
+        console.error("Error fetching blueprint data");
+        setData(null);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
     retrieveData();
   }, [server, tenantID, blueprintID]);
@@ -68,7 +88,8 @@ const BlueprintProvider = ({ children }: { children: React.ReactNode }) => {
         graph,
         requestOptions,
         setRequestOptions,
-        isLoading: loading,
+        isLoading,
+        isError,
       }}
     >
       {children}

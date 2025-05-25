@@ -2,7 +2,7 @@ import React from "react";
 import { PrefillMappingContext } from "@/providers/prefillMappingProvider";
 import { BlueprintContext } from "@/providers/blueprintProvider";
 import getFormFromNodeID from "@/util/getFormFromNodeID";
-import { PrefillMapping } from "@/types/dataSource";
+import { GlobalPrefillMapping, PrefillMapping } from "@/types/dataSource";
 import createFormMapping from "@/util/createFormMapping";
 
 const usePrefillMapping = (formNodeID: string | null) => {
@@ -13,9 +13,9 @@ const usePrefillMapping = (formNodeID: string | null) => {
   const [prefillMapping, setPrefillMapping] = React.useState<PrefillMapping[]>(
     []
   );
-  const formNodeName =
-    data?.nodes.find((node) => node.id === formNodeID)?.data.name ?? "";
-  const form = formNodeID && data ? getFormFromNodeID(formNodeID, data) : null;
+  let formNodeName =
+    data?.nodes?.find((node) => node.id === formNodeID)?.data.name ?? "";
+  let form = formNodeID && data ? getFormFromNodeID(formNodeID, data) : null;
 
   React.useEffect(() => {
     if (!formNodeID || !formNodeName) return;
@@ -48,32 +48,15 @@ const usePrefillMapping = (formNodeID: string | null) => {
     name: string,
     value: string | null
   ) => {
-    if (setPrefillMapping) {
-      setPrefillMapping((prev) =>
-        prev.map((property) => {
-          if (property.name === name) {
-            return { ...property, value: value };
-          }
-          return property;
-        })
-      );
-    }
-    setGlobalPrefillMapping((prev) =>
-      prev.map((mapping) => {
-        if (mapping.id === formNodeID) {
-          return {
-            ...mapping,
-            properties: mapping.properties.map((property) => {
-              if (property.name === name) {
-                return { ...property, value: value };
-              }
-              return property;
-            }),
-          };
-        }
-        return mapping;
-      })
-    );
+    updateFormMapping({ name, value, setPrefillMapping });
+    updateGlobalMapping({ formNodeID, name, value, setGlobalPrefillMapping });
+  };
+
+  const clearPrefillMapping = () => {
+    setPrefillMapping([]);
+    setGlobalPrefillMapping([]);
+    form = null;
+    formNodeName = "";
   };
 
   return {
@@ -81,7 +64,64 @@ const usePrefillMapping = (formNodeID: string | null) => {
     formNodeName,
     prefillMapping,
     updatePrefillMapping,
+    clearPrefillMapping,
   };
+};
+
+interface UpdateFormMappingParams {
+  name: string;
+  value: string | null;
+  setPrefillMapping: React.Dispatch<React.SetStateAction<PrefillMapping[]>>;
+}
+
+const updateFormMapping = ({
+  name,
+  value,
+  setPrefillMapping,
+}: UpdateFormMappingParams): void => {
+  if (setPrefillMapping) {
+    setPrefillMapping((prev) =>
+      prev.map((property) => {
+        if (property.name === name) {
+          return { ...property, value: value };
+        }
+        return property;
+      })
+    );
+  }
+};
+
+interface UpdateGlobalMappingParams {
+  formNodeID: string;
+  name: string;
+  value: string | null;
+  setGlobalPrefillMapping: React.Dispatch<
+    React.SetStateAction<GlobalPrefillMapping[]>
+  >;
+}
+
+const updateGlobalMapping = ({
+  formNodeID,
+  name,
+  value,
+  setGlobalPrefillMapping,
+}: UpdateGlobalMappingParams) => {
+  setGlobalPrefillMapping((prev) =>
+    prev.map((mapping) => {
+      if (mapping.id === formNodeID) {
+        return {
+          ...mapping,
+          properties: mapping.properties.map((property) => {
+            if (property.name === name) {
+              return { ...property, value: value };
+            }
+            return property;
+          }),
+        };
+      }
+      return mapping;
+    })
+  );
 };
 
 export default usePrefillMapping;

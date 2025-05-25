@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { BlueprintContext } from "@/providers/blueprintProvider";
 import TextInput from "./textInput";
 import SubmitButton from "./submitButton";
@@ -19,7 +19,9 @@ const GetForms = ({ handleAccordionChange }: GetFormsProps) => {
     process.env.NEXT_PUBLIC_API_BLUEPRINT_ID || ""
   );
   const [blueprintVersionId, setBlueprintVersionId] = React.useState("");
-  const { setRequestOptions } = React.useContext(BlueprintContext);
+  const [successfulSubmit, setSuccessfulSubmit] = React.useState(false);
+  const { setRequestOptions, isError, data } =
+    React.useContext(BlueprintContext);
 
   const handleSubmit = () => {
     const requestOptions = {
@@ -29,8 +31,14 @@ const GetForms = ({ handleAccordionChange }: GetFormsProps) => {
       blueprintVersionID: blueprintVersionId,
     };
     setRequestOptions(requestOptions);
-    handleAccordionChange();
   };
+
+  React.useEffect(() => {
+    if (data && !successfulSubmit) {
+      setSuccessfulSubmit(true);
+      handleAccordionChange();
+    }
+  }, [data, handleAccordionChange, successfulSubmit]);
 
   const formInputConfigs = [
     {
@@ -78,6 +86,11 @@ const GetForms = ({ handleAccordionChange }: GetFormsProps) => {
         justifySelf: "center",
       }}
     >
+      {isError && (
+        <Typography color="red">
+          Error retrieving blueprint data. Please check your inputs.
+        </Typography>
+      )}
       {formInputConfigs.map((input) => (
         <TextInput
           key={input.label}

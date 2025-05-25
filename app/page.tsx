@@ -12,12 +12,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import GetForms from "./components/get_forms/getForms";
 import FormList from "./components/form_list/formList";
 import PrefillList from "./components/prefill/prefillList";
+import { BlueprintContext } from "./providers/blueprintProvider";
 
 export default function Home() {
   const [expanded, setExpanded] = React.useState<string | false>("get-forms");
   const [selectedFormID, setSelectedFormID] = React.useState<string | null>(
     null
   );
+  const { isError } = React.useContext(BlueprintContext);
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -54,6 +56,12 @@ export default function Home() {
       content: <PrefillList formNodeID={selectedFormID} />,
     },
   ];
+
+  React.useEffect(() => {
+    if (isError) {
+      setSelectedFormID(null);
+    }
+  }, [isError]);
 
   return (
     <Box sx={{ width: "100%", padding: 4, justifySelf: "center" }}>
