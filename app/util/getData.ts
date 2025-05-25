@@ -1,5 +1,15 @@
 "use server";
 
+/**
+ * Fetches blueprint graph data from the specified server for a given tenant and blueprint.
+ *
+ * @param server - The base URL of the server to fetch data from.
+ * @param tenantID - The unique identifier of the tenant.
+ * @param blueprintID - The unique identifier of the blueprint.
+ * @param blueprintVersionID - (Optional) The version ID of the blueprint.
+ * @returns The fetched blueprint graph data as JSON.
+ * @throws Throws an error if the fetch operation fails or the response is not OK.
+ */
 export const getData = async (
   server: string,
   tenantID: string,
