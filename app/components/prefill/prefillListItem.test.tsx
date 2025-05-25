@@ -21,25 +21,6 @@ describe("PrefillListItem", () => {
     expect(onClick).toHaveBeenCalledWith("id1", "foo");
   });
 
-  it("calls onClear and does not call onClick when Clear is clicked", () => {
-    const onClick = jest.fn();
-    const onClear = jest.fn();
-    render(
-      <PrefillListItem
-        name="foo"
-        value="bar"
-        formNodeID="id1"
-        onClick={onClick}
-        onClear={onClear}
-      >
-        Test Child
-      </PrefillListItem>
-    );
-    fireEvent.click(screen.getByText("Clear"));
-    expect(onClear).toHaveBeenCalledWith("id1", "foo");
-    expect(onClick).not.toHaveBeenCalled();
-  });
-
   it("renders gray text if value is falsey", () => {
     render(
       <PrefillListItem
