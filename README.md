@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Junior Software Engineer Coding Challenge (63e6b5)
 
-## Getting Started
+This is a journey builder app that allows users to map prefilled form fields based on previous forms that have been submitted. Details are available here:
 
-First, run the development server:
+[Journey Builder React Coding Challenge](https://fluttering-atmosphere-1b5.notion.site/Journey-Builder-React-Coding-Challenge-190d5fe264fa80cba39ec21afc6d42ec)
+
+## Setup - Development
+
+Install packages:
+
+```bash
+nvm use
+npm install
+```
+
+Update environment variables (optional):
+
+To prepopulate the API connection form, edit the `.env.development` file containing the `action-blueprint-graph-get` API endpoint values.
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup - Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application is hosted on Vercel and available at this URL:
 
-## Learn More
+[Journey Builder](https://63e6b5.vercel.app/)
 
-To learn more about Next.js, take a look at the following resources:
+> Note: A publicly accessible `action-blueprint-graph-get` endpoint will need to be provided. The mock API server is not available in the production environment.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deployment will happen automatically when updates are successfully merged in the `main` branch..
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Deploy on Vercel
+## Testing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Manually run all unit tests:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+```
+
+Start tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+> Note: All tests are run automatically on pull request.
+
+## Using Custom Data Sources
+
+Custom data sources are loaded at runtime from `data_sources/config.json`. Provide an object, in the following format, for each data source that you would like to be available to the application.
+
+```json
+[
+  {
+    "id": "123abc",
+    "name": "My Custom Data Source",
+    "properties": [
+      { "name": "Custom Property 1" },
+      { "name": "Custom Property 2" },
+      { "name": "Custom Property 3" }
+    ]
+  }
+]
+```
+
+## Other Information
+
+User Interface:
+
+- The interface is a single page containing multiple accordion panels. Add / modify panels using the `accordionPanelConfigs` array in `page.tsx`.
+
+Theming:
+
+- Theming is done via Material UI and can be modified in `theme.ts`.
+
+State Management:
+
+- The blueprint data state is preserved and shared among components using the `BlueprintProvider` context provider.
+- The prefill mapping selected by the user is stored during the session using the `PrefillMappingProvider` context provider. The intention is to mimic behavior that would likely be handled with a database in a true production application.
+
+Data Structure:
+
+- The [digraph-js](https://www.npmjs.com/package/digraph-js) library is used to generate and traverse the directed acyclic graph.
