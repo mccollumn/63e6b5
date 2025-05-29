@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import {
   Box,
   Accordion,
@@ -64,25 +64,27 @@ export default function Home() {
   }, [isError]);
 
   return (
-    <Box sx={{ width: "100%", padding: 4, justifySelf: "center" }}>
-      {accordionPanelConfigs.map((panel) => (
-        <Accordion
-          key={panel.id}
-          expanded={expanded === panel.id}
-          onChange={handleChange(panel.id)}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`${panel.id}-content`}
-            id={`${panel.id}-header`}
+    <Suspense fallback={<div>Loading...</div>}>
+      <Box sx={{ width: "100%", padding: 4, justifySelf: "center" }}>
+        {accordionPanelConfigs.map((panel) => (
+          <Accordion
+            key={panel.id}
+            expanded={expanded === panel.id}
+            onChange={handleChange(panel.id)}
           >
-            <Typography align="center" sx={{ width: "100%" }}>
-              {panel.title}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>{panel.content}</AccordionDetails>
-        </Accordion>
-      ))}
-    </Box>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`${panel.id}-content`}
+              id={`${panel.id}-header`}
+            >
+              <Typography align="center" sx={{ width: "100%" }}>
+                {panel.title}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>{panel.content}</AccordionDetails>
+          </Accordion>
+        ))}
+      </Box>
+    </Suspense>
   );
 }
