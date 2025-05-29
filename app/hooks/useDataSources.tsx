@@ -5,6 +5,7 @@ import createFormMapping from "@/util/createFormMapping";
 import { getDataSources } from "@/util/getDataSources";
 import { BlueprintForm } from "@/types/blueprintGraph";
 import { DataSource } from "@/types/dataSource";
+import { useSearchParams } from "next/navigation";
 
 const useDataSources = (formNodeID: string | null) => {
   const [dataSources, setDataSources] = React.useState<DataSource[]>([]);
@@ -13,11 +14,15 @@ const useDataSources = (formNodeID: string | null) => {
   >([]);
   const { data, graph } = React.useContext(BlueprintContext);
 
+  const params = useSearchParams();
+  const scope = params.get("scope");
+
   React.useEffect(() => {
     const getCustomDataSources = async () => {
       const customDataSources: DataSource[] = await getDataSources();
       return customDataSources;
     };
+    if (scope && !scope?.includes("global")) return;
     getCustomDataSources().then((customDataSources) => {
       if (Array.isArray(customDataSources)) {
         setCustomDataSources((prev) => [...prev, ...customDataSources]);
@@ -25,12 +30,25 @@ const useDataSources = (formNodeID: string | null) => {
         setCustomDataSources((prev) => [...prev, customDataSources]);
       }
     });
-  }, []);
+  }, [scope]);
 
   React.useEffect(() => {
     if (!formNodeID || !graph || !data) return;
 
-    const formDependencies = graph.getDeepParents(formNodeID).toArray();
+    const directDependencies = graph.getParents(formNodeID);
+    const allDependencies = graph.getDeepParents(formNodeID).toArray();
+    const transitiveDependencies = allDependencies.filter(
+      (node) => !directDependencies.some((d) => d.id === node)
+    );
+
+    const formDependencies = [];
+    if (!scope || scope.includes("direct")) {
+      formDependencies.push(...directDependencies.map((node) => node.id));
+    }
+    if (!scope || scope.includes("transitive")) {
+      formDependencies.push(...transitiveDependencies);
+    }
+
     const forms = formDependencies.map((node) => getFormFromNodeID(node, data));
     const formNodes = formDependencies.map((node) =>
       data.nodes.find((n) => n.id === node)
@@ -46,7 +64,7 @@ const useDataSources = (formNodeID: string | null) => {
         { name: formNodeName, id: formNodeID, properties: [...mapping] },
       ]);
     });
-  }, [customDataSources, data, formNodeID, graph]);
+  }, [customDataSources, data, formNodeID, graph, scope]);
 
   return {
     dataSources,
